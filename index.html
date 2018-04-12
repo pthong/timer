@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+
+	<style>
+	* {
+		margin: 0;
+		padding: 0;
+		color: #EDCBA9;
+	  }
+
+	  
+	main {
+		display: table;
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		background-color:#123456;
+	}
+
+	section {
+		display: table-cell;
+		vertical-align: middle;
+	}
+
+	article {
+		margin-left: auto;
+		margin-right: auto; 
+		width: 100%;
+		text-align: center;
+		
+	}
+	
+	h2{
+		font-size: 2500%
+	}
+
+
+
+	#mobileuserinput{
+		position: absolute;
+		left:0; top:0;
+		width:100%; height: 100%;
+		z-index: 2;
+	}
+	/*div {
+
+            width: 50%;
+            height: 50%;
+            float: left;
+        }*/
+	  
+	</style>
+	
+    <title>timer</title>
+
+  </head>
+  <body>
+	  <!--<div id=mobileuserinput>
+  			<div onClick="minuutOmhoog()"></div>
+    <div onClick="secondeOmhoog()"></div>
+    <div onClick="minuutOmlaag()"></div>
+    <div onClick="secondeOmlaag()"></div>
+	</div>-->
+	<main>
+
+	<section>
+
+ 
+  	<article>
+		<h2 id="time"> 0:00 </h2>
+		<p id="debug"></p>
+	<article>
+
+	</section>
+
+			
+	</main>
+
+   </body>
+   
+   <script>
+   
+
+
+   
+   
+   var ring = new Audio("Boom_Chuk_130.mp3");
+   var interval;
+   var m = 0;
+	var s = 0;
+	var selected = 'minute';
+	var timeRun = false;
+	var typed = "0";
+	//var progressbar = document.getElementsByTagName('progress')[0];
+
+    var msg = new SpeechSynthesisUtterance();
+
+    msg.volume = 0.5; // 0 to 1
+	msg.rate = 1.0;
+    msg.text = 'Hi,      Set your timer in minutes and press submit';
+    msg.lang = 'nl';
+
+
+			msg.text = 'hoe zeg ik jou, iets wat nou juist, te vaak wordt gezegd, zonder geovel, hoe zeg ik jou, uit de grond van mijn hart, ik hou van jou!';
+    	//	msg.text = 'DONE'
+		//	speechSynthesis.speak(msg);
+
+var ctrlT = false;
+var ctrlR = false;
+window.onkeypress = function(e){
+	var key = e.keyCode ? e.keyCode : e.which;
+
+	if(key == 116){
+		//letter t
+		ctrlT = true;
+		console.log("ctrl t = true");
+	} 
+	if(key == 49 && ctrlT){
+		themeto("default");
+	}
+		if(key == 50 && ctrlT){
+		themeto("contrast");
+	}
+		if(key == 51 && ctrlT){
+		themeto("wouter");
+	}
+	
+}
+
+
+window.onkeyup = function(e) {
+    var key = e.keyCode ? e.keyCode : e.which;
+	
+			console.log(key);
+		if(key == 84){
+		//letter t
+			ctrlT = false;
+			console.log("ctrl t = false");
+		} 
+
+
+	if(key == 37 || key == 39){ // pijltje links en rechts
+		selected = (selected === 'minute') ? 'second' :'minute';
+
+	}
+
+
+    if (key == 38) { // pijltje omhoog
+		if(selected == 'minute'){
+		//	minuutOmhoog();
+		}else if(selected == 'second'){
+		//	secondeOmhoog();
+		}
+		
+		//updateTime();
+
+    }else if (key == 40) { // pijltje omlaag
+     	if(selected == 'minute'){
+		//	minuutOmlaag();
+		}else if(selected == 'second'){
+		//	secondeOmlaag();
+		}
+		//updateTime();
+    }else if(key == 13){ // enter
+	
+		if(timeRun){
+			clearInterval(interval);
+		}else{
+			startTimer();
+		}
+		timeRun = !timeRun;
+		
+
+		
+	}
+	
+
+	if(key == 46){ //delete knop
+
+
+	clearInterval(interval);
+	timeRun = false;
+	m = 0;
+	s= 0;
+	typed = "0"; updateTime();
+	
+	}
+
+	console.log("KEY {0}", key)
+	
+	if(timeRun == false){
+    switch(key){
+		case 48:
+		case 96: // Numpad0
+			typed += ""+0;
+			break;
+		case 49:
+		case 97: // Numpad1
+			typed += ""+1;
+			break;
+		case 50:
+		case 98: // Numpad2
+			typed += ""+2;
+			break;
+		case 51:
+		case 99: // Numpad3
+			typed += ""+3;
+			break;
+		case 51:
+		case 100: // Numpad4
+			typed += ""+4;
+			break;
+		case 52:
+		case 101: // Numpad5
+			typed += ""+5;
+			break;
+		case 53:
+		case 102: // Numpad6
+			typed += ""+6;
+			break;
+		case 54:
+		case 103: // Numpad7
+			typed += ""+7;
+			break;
+		case 55:
+		case 104: // Numpad8
+			typed += ""+8; 
+			break;
+		case 56:
+		case 105: //Numpad9
+			typed += ""+9;
+			break;
+		}
+
+		if((key >= 96 && key <= 105) || (key >= 49 && key <= 56) ){
+			console.log("numUPDATE");
+			m = Number(typed);
+			updateTime();
+		}
+	}
+}
+function minuutOmhoog(){
+	m++;updateTime();
+}
+function minuutOmlaag(){
+	m--;
+	if(m<0)m=0;
+	updateTime();
+}
+
+function secondeOmhoog(){
+	s++; 
+	if(s> 59)
+	{s=0; minuutOmhoog()}
+	updateTime();
+}
+
+function secondeOmlaag(){
+			s--;
+
+		if(s < 0){
+			s = 59;
+			if(m>0){
+				minuutOmlaag();
+			}else{
+				s=0;
+			}
+		}
+		updateTime();
+}
+
+ // startTimer();
+   function startTimer(){
+		clearInterval(interval);
+		interval = setInterval(function(){
+			
+			if(s == 0){
+				m--;
+				s=59
+			}else{
+				s--;
+			}
+
+			// var timerTextMap = {
+			// 	'1459': 'Stap 1: Zet je ballen goed',
+			// 	'1449': 'kook water',
+			// 	'1440' : 'snij iets'
+			// }
+			// var change = timerTextMap.hasOwnProperty(m+""+s);
+			// if(change){
+			// msg.text = timerTextMap[m+""+s];
+			// 	speechSynthesis.speak(msg);
+			// 	document.getElementById("task").innerText = msg.text;
+			// }
+
+		//	console.log(timerTextMap[s	+""+m]);
+			// while(false){
+
+			// }
+
+
+			// if(m == 14 && s == 59){
+			// 	msg.text = 
+			// 	["1. Kook water met een bergje zout",
+			// 	"	2. Snijd courgette, champions en de rode peper in dunne plakjes",
+			// 	"	3. Als het water gekookt is doe de penne erin en luister cbarner music session 1 (9 minuten)",
+			// 	"	4. Fruit de knoflook en rode paper",
+			// 	"	5. Plakjes courgette erbij",
+			// 	"	6. Lepel crème fresh erbij",
+			// 	"	7. In blokjes Gorgonzola toevoegen",
+			// 	"	8. Pijneboom pitten bakken in aparte pannetje",
+			// 	"	9. Als het cbarner afgelopen is de penne afgieten",
+			// 	"	10. Mixxen in de courgette",
+			// 	"	11. Pijnebomen erbij.",
+			// 	"	12. rasp parmezaanse kaas er boven"];
+			// 	speechSynthesis.speak(msg);
+			// 	document.getElementById("task").innerText = msg.text;
+			// }
+
+			// if(m == 13 && s == 0){
+			// 	msg.text = "snij champions";
+			// 	speechSynthesis.speak(msg);
+			// 	document.getElementById("task").innerText = msg.text;
+			// }
+			if(s == 0 && m == 0){
+				document.querySelector("#time").innerHTML = "Goodbye World!";
+				clearInterval(interval);
+				ring.play();
+			}else{
+				updateTime();
+			}
+			
+		
+
+		}, 1000);
+
+		}
+
+		function updateTime(){
+				if(s < 10){
+					document.querySelector("#time").innerHTML = m + ":0" + s;
+				}else{
+					document.querySelector("#time").innerHTML = m + ":" + s;
+				}
+		}
+		
+
+
+	function bgc(color){
+		document.getElementsByTagName("main")[0].style.backgroundColor = color;
+	}
+	function txtc(color){
+		document.querySelector("#time").style.color = color;
+	}
+
+
+	var themes= [{
+		name: 'contrast',
+		bg:'black',
+		txtColor: 'yellow'
+	},
+	{
+		name: 'default',
+		bg:'#123456',
+		txtColor: '#EDCBA9'
+	},
+	{
+		name: 'wouter',
+		bg:'#D2D3D4',
+		txtColor: 'darkcyan'
+	}
+	
+	]
+	function themeto(theme){
+			for(let t of themes){
+				if(t.name == theme){
+					document.getElementsByTagName("main")[0].style.backgroundColor = t.bg;
+					document.querySelector("#time").style.color = t.txtColor;
+					break;
+					
+				}
+			}
+	}
+
+	function save(){
+		console.log("you theme is save as default in local storage :)")
+	}
+
+	function keyboardClick(){
+		var button = '1'
+		switch(button) {
+			case '1':
+				console.log("1");
+				break;
+			case '2':
+				console.log("1");
+				break;
+			default:
+			console.log("1");
+		}
+	}
+
+
+
+function changeView(view){
+	if(true){
+			var timerView = document.getElementById("time");
+		timerView.style.display='none';
+		var secondTimer = document.getElementById("secondTime");
+	secondTimer.innerHTML= "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO";
+
+	}
+
+}
+
+  
+function d(txt){
+	 document.getElementById("debug").innerHTML=
+	 document.getElementById("debug").innerHTML + "<br>" +
+	 txt;
+}
+
+	function c(){
+		var live = new Date();
+		var minutes = live.getMinutes() - start.getMinutes(); // negative strange number
+		var seconds = live.getSeconds()-start.getSeconds();
+		console.log(minutes);
+		console.log(seconds);
+	}
+   </script>
+   
+   
+</html>
