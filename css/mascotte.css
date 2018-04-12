@@ -1,0 +1,54 @@
+x{
+    font-family: "Comic Sans MS";
+}
+
+#mascotte{
+    position: absolute;
+    visibility : hidden;
+    top:75px;
+    left:60px;
+}
+
+#body{
+    position: absolute;
+    background:brown;
+    border: 2px solid black;
+    width: 50px;
+    height: 60px;
+ 
+    top: 0px;
+    left:0px;
+}
+
+#eye-left{
+   position: absolute;
+    height: 10px;
+    width:10px;
+    background: white;
+    border: 2px solid black;
+    border-radius: 20px 50px;
+    top: 8px;
+    left: 4px;
+}
+
+#eye-right{
+    position: absolute;
+    height: 10px;
+    width:10px;
+    background: white;
+    border: 2px solid black;
+    border-radius: 50px 20px;
+    top: 8px;
+    left: 30px;
+}
+
+#mouth{
+    position: absolute;
+    height: 10px; width: 25px;
+    border-radius: 0px 0px 20px 20px; 
+    background: white;
+    border: 2px solid black;
+    top: 40px;
+    left: 10px;
+}
+
